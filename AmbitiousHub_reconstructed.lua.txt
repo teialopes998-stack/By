@@ -1,0 +1,439 @@
+-- AmbitiousHub — Reconstructed from execution log
+-- Original: discord.gg/ambitiouss
+-- Note: speed bypass logic is NOT included (was inside Luarmor-protected payload)
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+
+local LP = Players.LocalPlayer
+
+-- ── GUI ────────────────────────────────────────────────────
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "AmbitiousHubGUI"
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+pcall(function() ScreenGui.Parent = CoreGui end)
+if not ScreenGui.Parent then ScreenGui.Parent = LP:WaitForChild("PlayerGui") end
+
+-- Main frame
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.Size = UDim2.new(0, 260, 0, 310)
+Main.Position = UDim2.new(0.5, -130, 0.5, -155)
+Main.BackgroundColor3 = Color3.new(0.0588235, 0.0588235, 0.0588235)
+Main.BorderSizePixel = 0
+Main.Active = true
+Main.ClipsDescendants = true
+Main.Parent = ScreenGui
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 16)
+local mainStroke = Instance.new("UIStroke", Main)
+mainStroke.Color = Color3.new(0.313726, 0.313726, 0.313726)
+mainStroke.Thickness = 1
+mainStroke.Transparency = 0.3
+
+-- Background image
+local BgImg = Instance.new("ImageLabel")
+BgImg.Name = "BackgroundImage"
+BgImg.Size = UDim2.new(1, 0, 1, 0)
+BgImg.BackgroundTransparency = 1
+BgImg.Image = "rbxassetid://77599245856089"
+BgImg.ScaleType = Enum.ScaleType.Crop
+BgImg.ZIndex = 1
+BgImg.Parent = Main
+Instance.new("UICorner", BgImg).CornerRadius = UDim.new(0, 18)
+
+-- Top bar (drag handle)
+local TopBar = Instance.new("Frame")
+TopBar.Name = "TopBar"
+TopBar.Size = UDim2.new(1, 0, 0, 40)
+TopBar.BackgroundTransparency = 1
+TopBar.ZIndex = 2
+TopBar.Parent = Main
+
+-- Title image
+local TitleImage = Instance.new("ImageLabel")
+TitleImage.Name = "TitleImage"
+TitleImage.Size = UDim2.new(0, 180, 0, 90)
+TitleImage.Position = UDim2.new(0, -35, 0, -115)
+TitleImage.BackgroundTransparency = 1
+TitleImage.Image = "rbxassetid://128938872032759"
+TitleImage.ScaleType = Enum.ScaleType.Fit
+TitleImage.ZIndex = 2
+TitleImage.Parent = TopBar
+
+-- Lock/Unlock button
+local LockBtn = Instance.new("TextButton")
+LockBtn.Name = "LockBtn"
+LockBtn.Size = UDim2.new(0, 60, 0, 25)
+LockBtn.Position = UDim2.new(0, 195, 0, 10)
+LockBtn.BackgroundColor3 = Color3.new(0.0980392, 0.0980392, 0.0980392)
+LockBtn.BackgroundTransparency = 0.3
+LockBtn.BorderSizePixel = 0
+LockBtn.Text = "Lock"
+LockBtn.TextSize = 10
+LockBtn.Font = Enum.Font.GothamBold
+LockBtn.TextColor3 = Color3.new(0.627451, 0.627451, 0.627451)
+LockBtn.AutoButtonColor = false
+LockBtn.ZIndex = 3
+LockBtn.Parent = TopBar
+Instance.new("UICorner", LockBtn).CornerRadius = UDim.new(0, 6)
+local lockStroke = Instance.new("UIStroke", LockBtn)
+lockStroke.Color = Color3.new(0.235294, 0.235294, 0.235294)
+lockStroke.Transparency = 0.8
+
+-- Status box
+local StatusBox = Instance.new("TextButton")
+StatusBox.Name = "StatusBox"
+StatusBox.Size = UDim2.new(1, -24, 0, 56)
+StatusBox.Position = UDim2.new(0, 12, 0, 75)
+StatusBox.BackgroundColor3 = Color3.new(0.0705882, 0.0705882, 0.0705882)
+StatusBox.BackgroundTransparency = 0.1
+StatusBox.Text = ""
+StatusBox.AutoButtonColor = false
+StatusBox.ZIndex = 2
+StatusBox.Parent = Main
+Instance.new("UICorner", StatusBox).CornerRadius = UDim.new(0, 14)
+local statusStroke = Instance.new("UIStroke", StatusBox)
+statusStroke.Color = Color3.new(0.313726, 0.313726, 0.313726)
+statusStroke.Transparency = 0.6
+
+local StatusLabel = Instance.new("TextLabel")
+StatusLabel.Size = UDim2.new(1, 0, 1, 0)
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Text = "DISABLED"
+StatusLabel.TextSize = 22
+StatusLabel.TextColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+StatusLabel.Font = Enum.Font.GothamBold
+StatusLabel.TextXAlignment = Enum.TextXAlignment.Center
+StatusLabel.TextYAlignment = Enum.TextYAlignment.Center
+StatusLabel.ZIndex = 3
+StatusLabel.Parent = StatusBox
+
+-- Inputs container
+local InputsContainer = Instance.new("Frame")
+InputsContainer.Name = "InputsContainer"
+InputsContainer.Size = UDim2.new(1, -24, 0, 58)
+InputsContainer.Position = UDim2.new(0, 12, 0, 136)
+InputsContainer.BackgroundColor3 = Color3.new(0.0705882, 0.0705882, 0.0705882)
+InputsContainer.BackgroundTransparency = 0.1
+InputsContainer.BorderSizePixel = 0
+InputsContainer.Parent = Main
+Instance.new("UICorner", InputsContainer).CornerRadius = UDim.new(0, 12)
+local inputStroke = Instance.new("UIStroke", InputsContainer)
+inputStroke.Color = Color3.new(0.313726, 0.313726, 0.313726)
+inputStroke.Transparency = 0.6
+
+-- Separator line
+local SepLine = Instance.new("Frame")
+SepLine.Name = "SepLine"
+SepLine.Size = UDim2.new(0, 1, 0, 42)
+SepLine.Position = UDim2.new(0.5, 0, 0, 8)
+SepLine.BackgroundColor3 = Color3.new(0.235294, 0.235294, 0.235294)
+SepLine.BackgroundTransparency = 0.5
+SepLine.BorderSizePixel = 0
+SepLine.ZIndex = 3
+SepLine.Parent = InputsContainer
+
+-- Keybind label
+local KeybindLabel = Instance.new("TextLabel")
+KeybindLabel.Text = "Keybind"
+KeybindLabel.TextSize = 10
+KeybindLabel.TextColor3 = Color3.new(0.470588, 0.470588, 0.470588)
+KeybindLabel.BackgroundTransparency = 1
+KeybindLabel.Font = Enum.Font.GothamBold
+KeybindLabel.Position = UDim2.new(0, 12, 0, 6)
+KeybindLabel.Size = UDim2.new(0, 100, 0, 12)
+KeybindLabel.TextXAlignment = Enum.TextXAlignment.Left
+KeybindLabel.ZIndex = 3
+KeybindLabel.Parent = InputsContainer
+
+-- Key button
+local KeyBtn = Instance.new("TextButton")
+KeyBtn.Name = "KeyBtn"
+KeyBtn.Size = UDim2.new(0.45, -16, 0, 28)
+KeyBtn.Position = UDim2.new(0, 12, 0, 22)
+KeyBtn.BackgroundColor3 = Color3.new(0.117647, 0.117647, 0.117647)
+KeyBtn.BackgroundTransparency = 0.2
+KeyBtn.BorderSizePixel = 0
+KeyBtn.Text = "R"
+KeyBtn.TextColor3 = Color3.new(0.960784, 0.960784, 0.960784)
+KeyBtn.TextSize = 14
+KeyBtn.Font = Enum.Font.GothamBold
+KeyBtn.AutoButtonColor = false
+KeyBtn.ZIndex = 3
+KeyBtn.Parent = InputsContainer
+Instance.new("UICorner", KeyBtn).CornerRadius = UDim.new(0, 8)
+Instance.new("UIStroke", KeyBtn).Transparency = 0
+
+-- Power label
+local PowerLabel = Instance.new("TextLabel")
+PowerLabel.Text = "Power"
+PowerLabel.TextSize = 10
+PowerLabel.TextColor3 = Color3.new(0.470588, 0.470588, 0.470588)
+PowerLabel.BackgroundTransparency = 1
+PowerLabel.Font = Enum.Font.GothamBold
+PowerLabel.Position = UDim2.new(0.5, 8, 0, 6)
+PowerLabel.Size = UDim2.new(0.45, -8, 0, 12)
+PowerLabel.TextXAlignment = Enum.TextXAlignment.Left
+PowerLabel.ZIndex = 3
+PowerLabel.Parent = InputsContainer
+
+-- Power box
+local PowerBox = Instance.new("TextBox")
+PowerBox.Name = "PowerBox"
+PowerBox.Size = UDim2.new(0.45, -16, 0, 28)
+PowerBox.Position = UDim2.new(0.5, 8, 0, 22)
+PowerBox.BackgroundColor3 = Color3.new(0.117647, 0.117647, 0.117647)
+PowerBox.BackgroundTransparency = 0.2
+PowerBox.BorderSizePixel = 0
+PowerBox.Text = "97000"
+PowerBox.TextColor3 = Color3.new(0.960784, 0.960784, 0.960784)
+PowerBox.TextSize = 14
+PowerBox.Font = Enum.Font.GothamBold
+PowerBox.ClearTextOnFocus = false
+PowerBox.PlaceholderText = "10K - 500K"
+PowerBox.PlaceholderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+PowerBox.ZIndex = 3
+PowerBox.Parent = InputsContainer
+Instance.new("UICorner", PowerBox).CornerRadius = UDim.new(0, 8)
+Instance.new("UIStroke", PowerBox).Transparency = 0
+
+-- Mode container (PC / Mobile)
+local ModeContainer = Instance.new("Frame")
+ModeContainer.Name = "ModeContainer"
+ModeContainer.Size = UDim2.new(1, -24, 0, 34)
+ModeContainer.Position = UDim2.new(0, 12, 0, 202)
+ModeContainer.BackgroundColor3 = Color3.new(0.0705882, 0.0705882, 0.0705882)
+ModeContainer.BackgroundTransparency = 0.1
+ModeContainer.BorderSizePixel = 0
+ModeContainer.Parent = Main
+Instance.new("UICorner", ModeContainer).CornerRadius = UDim.new(0, 12)
+Instance.new("UIStroke", ModeContainer).Transparency = 0.6
+
+local ModeIndicator = Instance.new("Frame")
+ModeIndicator.Name = "ModeIndicator"
+ModeIndicator.Size = UDim2.new(0.5, -6, 1, -8)
+ModeIndicator.Position = UDim2.new(0, 4, 0, 4)
+ModeIndicator.BackgroundColor3 = Color3.new(0.156863, 0.156863, 0.156863)
+ModeIndicator.BorderSizePixel = 0
+ModeIndicator.ZIndex = 2
+ModeIndicator.Parent = ModeContainer
+Instance.new("UICorner", ModeIndicator).CornerRadius = UDim.new(0, 10)
+
+local ModePC = Instance.new("TextButton")
+ModePC.Name = "ModePC"
+ModePC.Size = UDim2.new(0.5, 0, 1, 0)
+ModePC.BackgroundTransparency = 1
+ModePC.Text = "PC"
+ModePC.TextSize = 12
+ModePC.Font = Enum.Font.GothamBold
+ModePC.TextColor3 = Color3.new(0.960784, 0.960784, 0.960784)
+ModePC.ZIndex = 4
+ModePC.Parent = ModeContainer
+
+local ModeMob = Instance.new("TextButton")
+ModeMob.Name = "ModeMob"
+ModeMob.Size = UDim2.new(0.5, 0, 1, 0)
+ModeMob.Position = UDim2.new(0.5, 0, 0, 0)
+ModeMob.BackgroundTransparency = 1
+ModeMob.Text = "Mobile"
+ModeMob.TextSize = 12
+ModeMob.Font = Enum.Font.GothamBold
+ModeMob.TextColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+ModeMob.ZIndex = 4
+ModeMob.Parent = ModeContainer
+
+-- Version container (V1 / V2)
+local VersionContainer = Instance.new("Frame")
+VersionContainer.Name = "VersionContainer"
+VersionContainer.Size = UDim2.new(1, -24, 0, 34)
+VersionContainer.Position = UDim2.new(0, 12, 0, 240)
+VersionContainer.BackgroundColor3 = Color3.new(0.0705882, 0.0705882, 0.0705882)
+VersionContainer.BackgroundTransparency = 0.1
+VersionContainer.BorderSizePixel = 0
+VersionContainer.Parent = Main
+Instance.new("UICorner", VersionContainer).CornerRadius = UDim.new(0, 12)
+Instance.new("UIStroke", VersionContainer).Transparency = 0.6
+
+local VersionIndicator = Instance.new("Frame")
+VersionIndicator.Name = "VersionIndicator"
+VersionIndicator.Size = UDim2.new(0.5, -6, 1, -8)
+VersionIndicator.Position = UDim2.new(0, 4, 0, 4)
+VersionIndicator.BackgroundColor3 = Color3.new(0.156863, 0.156863, 0.156863)
+VersionIndicator.BorderSizePixel = 0
+VersionIndicator.ZIndex = 2
+VersionIndicator.Parent = VersionContainer
+Instance.new("UICorner", VersionIndicator).CornerRadius = UDim.new(0, 10)
+
+local VersionV1 = Instance.new("TextButton")
+VersionV1.Name = "VersionV1"
+VersionV1.Size = UDim2.new(0.5, 0, 1, 0)
+VersionV1.BackgroundTransparency = 1
+VersionV1.Text = "V1"
+VersionV1.TextSize = 12
+VersionV1.Font = Enum.Font.GothamBold
+VersionV1.TextColor3 = Color3.new(0.960784, 0.960784, 0.960784)
+VersionV1.ZIndex = 4
+VersionV1.Parent = VersionContainer
+
+local VersionV2 = Instance.new("TextButton")
+VersionV2.Name = "VersionV2"
+VersionV2.Size = UDim2.new(0.5, 0, 1, 0)
+VersionV2.Position = UDim2.new(0.5, 0, 0, 0)
+VersionV2.BackgroundTransparency = 1
+VersionV2.Text = "V2"
+VersionV2.TextSize = 12
+VersionV2.Font = Enum.Font.GothamBold
+VersionV2.TextColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+VersionV2.ZIndex = 4
+VersionV2.Parent = VersionContainer
+
+-- Footer
+local Footer = Instance.new("TextButton")
+Footer.Name = "Footer"
+Footer.Size = UDim2.new(1, -24, 0, 24)
+Footer.Position = UDim2.new(0, 12, 0, 278)
+Footer.BackgroundTransparency = 1
+Footer.Text = "discord.gg/ambitiouss"
+Footer.TextSize = 11
+Footer.Font = Enum.Font.GothamBold
+Footer.TextColor3 = Color3.new(0.3, 0.3, 0.3)
+Footer.ZIndex = 2
+Footer.Parent = Main
+
+-- ── STATE ──────────────────────────────────────────────────
+local enabled = false
+local locked = false
+local currentMode = "PC"
+local currentVersion = "V1"
+local currentKey = Enum.KeyCode.R
+local listeningForKey = false
+local power = 97000
+
+-- ── TWEEN helpers ──────────────────────────────────────────
+local TI = TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+local function tw(obj, props) TweenService:Create(obj, TI, props):Play() end
+
+-- ── DRAG ───────────────────────────────────────────────────
+do
+    local drag, ds, sp = false, nil, nil
+    TopBar.InputBegan:Connect(function(inp)
+        if inp.UserInputType == Enum.UserInputType.MouseButton1 or inp.UserInputType == Enum.UserInputType.Touch then
+            drag = true; ds = inp.Position; sp = Main.Position
+            inp.Changed:Connect(function()
+                if inp.UserInputState == Enum.UserInputState.End then drag = false end
+            end)
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(inp)
+        if locked then return end
+        if drag and (inp.UserInputType == Enum.UserInputType.MouseMovement or inp.UserInputType == Enum.UserInputType.Touch) then
+            local d = inp.Position - ds
+            Main.Position = UDim2.new(sp.X.Scale, sp.X.Offset + d.X, sp.Y.Scale, sp.Y.Offset + d.Y)
+        end
+    end)
+end
+
+-- ── TOGGLE ENABLE ──────────────────────────────────────────
+local function setEnabled(on)
+    enabled = on
+    if on then
+        StatusLabel.Text = "ENABLED"
+        StatusLabel.TextColor3 = Color3.new(0.2, 0.9, 0.4)
+    else
+        StatusLabel.Text = "DISABLED"
+        StatusLabel.TextColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+    end
+end
+
+StatusBox.MouseButton1Click:Connect(function()
+    setEnabled(not enabled)
+end)
+
+-- ── LOCK ───────────────────────────────────────────────────
+LockBtn.MouseButton1Click:Connect(function()
+    locked = not locked
+    if locked then
+        LockBtn.Text = "Unlock"
+        LockBtn.TextColor3 = Color3.new(1, 0, 0.917647)
+    else
+        LockBtn.Text = "Lock"
+        LockBtn.TextColor3 = Color3.new(0.627451, 0.627451, 0.627451)
+    end
+end)
+
+-- ── MODE (PC / Mobile) ─────────────────────────────────────
+local function setMode(mode)
+    currentMode = mode
+    local pcOn = mode == "PC"
+    tw(ModeIndicator, {
+        Position = pcOn and UDim2.new(0, 4, 0, 4) or UDim2.new(0.5, 2, 0, 4)
+    })
+    ModePC.TextColor3 = pcOn and Color3.new(0.960784, 0.960784, 0.960784) or Color3.new(0.392157, 0.392157, 0.392157)
+    ModeMob.TextColor3 = pcOn and Color3.new(0.392157, 0.392157, 0.392157) or Color3.new(0.960784, 0.960784, 0.960784)
+end
+ModePC.MouseButton1Click:Connect(function() setMode("PC") end)
+ModeMob.MouseButton1Click:Connect(function() setMode("Mobile") end)
+
+-- ── VERSION (V1 / V2) ──────────────────────────────────────
+local function setVersion(ver)
+    currentVersion = ver
+    local v1On = ver == "V1"
+    tw(VersionIndicator, {
+        Position = v1On and UDim2.new(0, 4, 0, 4) or UDim2.new(0.5, 2, 0, 4)
+    })
+    VersionV1.TextColor3 = v1On and Color3.new(0.960784, 0.960784, 0.960784) or Color3.new(0.392157, 0.392157, 0.392157)
+    VersionV2.TextColor3 = v1On and Color3.new(0.392157, 0.392157, 0.392157) or Color3.new(0.960784, 0.960784, 0.960784)
+end
+VersionV1.MouseButton1Click:Connect(function() setVersion("V1") end)
+VersionV2.MouseButton1Click:Connect(function() setVersion("V2") end)
+
+-- ── KEYBIND ────────────────────────────────────────────────
+KeyBtn.MouseButton1Click:Connect(function()
+    if listeningForKey then return end
+    listeningForKey = true
+    KeyBtn.Text = "..."
+    KeyBtn.TextColor3 = Color3.new(1, 0.8, 0.2)
+    local conn
+    conn = UserInputService.InputBegan:Connect(function(inp)
+        if inp.UserInputType ~= Enum.UserInputType.Keyboard then return end
+        if inp.KeyCode == Enum.KeyCode.Escape then
+            KeyBtn.Text = currentKey.Name
+            KeyBtn.TextColor3 = Color3.new(0.960784, 0.960784, 0.960784)
+            listeningForKey = false; conn:Disconnect(); return
+        end
+        currentKey = inp.KeyCode
+        KeyBtn.Text = inp.KeyCode.Name
+        KeyBtn.TextColor3 = Color3.new(0.960784, 0.960784, 0.960784)
+        listeningForKey = false; conn:Disconnect()
+    end)
+end)
+
+-- ── POWER BOX ──────────────────────────────────────────────
+PowerBox.FocusLost:Connect(function()
+    local v = tonumber(PowerBox.Text)
+    if v and v >= 10000 and v <= 500000 then
+        power = v
+    else
+        PowerBox.Text = tostring(power)
+    end
+end)
+
+-- ── GLOBAL KEYBIND ─────────────────────────────────────────
+UserInputService.InputBegan:Connect(function(inp, gpe)
+    if gpe or listeningForKey then return end
+    if inp.UserInputType == Enum.UserInputType.Keyboard and inp.KeyCode == currentKey then
+        setEnabled(not enabled)
+    end
+end)
+
+-- ── FOOTER ─────────────────────────────────────────────────
+Footer.MouseEnter:Connect(function() tw(Footer, {TextColor3 = Color3.new(0.6, 0.6, 0.8)}) end)
+Footer.MouseLeave:Connect(function() tw(Footer, {TextColor3 = Color3.new(0.3, 0.3, 0.3)}) end)
+
+print("Ambitious Speed Bypass On Top")
+print("discord.gg/ambitiouss")
